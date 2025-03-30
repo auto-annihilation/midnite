@@ -1,0 +1,74 @@
+version: "3.8"
+
+x-env: &env
+  environment:
+    # Development
+    - IPDB_CONTEXT_SIZE=10
+    - PYTHONBREAKPOINT=ipdb.set_trace
+    # Application Variables
+    - DATABASE_URI=${DATABASE_URI:-postgresql://postgres@db/development}
+    - FLASK_DEBUG=${FLASK_DEBUG:-true}
+    - LOG_LEVEL=${LOG_LEVEL:-info}
+    - LOGFMT=${LOGFMT:-text}
+    - SERVICE_ENV=${SERVICE_ENV:-development}
+
+services:
+  base: &base
+    <<: *env
+    build:
+      context: .
+    networks:
+      - audit-api
+    volumes:
+      - .:/usr/src/app
+
+  web:
+    <<: *base
+    command: ["flask", "run", "--host=0.0.0.0"]
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    stdin_open: true
+    tty: true
+
+  test:
+    <<: *base
+    environment:
+      - DATABASE_URI=postgresql://postgres@testdb/test
+      - SERVICE_ENV=test
+    depends_on:
+      - testdb
+    volumes:
+      - .:/usr/src/app
+      - .htmlcov:/usr/src/app/.htmlcov
+
+  db:
+    image: postgres:17.4
+    environment:
+      - POSTGRES_DB=development
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - audit-api
+    ports:
+      - "5332:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+
+  testdb:
+    image: postgres:17.4
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_USER=postgres
+    networks:
+      - audit-api
+
+networks:
+  audit-api:
+    external: ${EXTERNAL_NETWORK:-true}
+
+volumes:
+  pgdata:

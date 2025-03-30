@@ -1,0 +1,13 @@
+# Docker ignore allowlist
+
+# Ignore everything
+*
+
+# include in the build
+!app
+!migrations
+!tests
+!e2e
+!poetry.lock
+!pyproject.toml
+!web.py

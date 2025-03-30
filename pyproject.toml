@@ -1,0 +1,208 @@
+[tool.poetry]
+name = "audit-api"
+version = "0.1.0"
+description = ""
+authors = ["apoclyps <kyle.harrison.dev@gmail.com>"]
+readme = "README.md"
+packages = []
+package-mode = false
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "3.13.2"
+apispec = "6.8.1"
+Flask = "3.1.0"
+Flask-Cors = "5.0.1"
+Flask-Migrate = "4.1.0"
+Flask-SQLAlchemy = "3.1.1"
+gevent = "24.11.1"
+gunicorn = "23.0.0"
+marshmallow = "3.26.1"
+psycopg2 = "2.9.10"
+python-decouple = "3.8"
+requests = "2.31.0"
+sqlalchemy = "2.0.39"
+sqlalchemy-utils = "0.41.2"
+structlog = "23.2.0"
+ujson = "5.10.0"
+
+
+[tool.poetry.group.dev.dependencies]
+codespell = "2.3.0"
+decouple-types = "1.0.1"
+factory-boy = "3.3.0"
+freezegun = "1.5.1"
+ipdb = "0.13.13"
+mypy = "1.11.0"
+pdbr = "0.8.8"
+pytest = "8.3.1"
+pytest-cov = "5.0.0"
+refurb = "2.0.0"
+ruff = "0.5.4"
+types-flask-cors = "5.0.0.20240902"
+types-flask-migrate = "4.0.0.20240311"
+types-freezegun = "1.1.10"
+types-psycopg2 = "2.9.21.20250318"
+types-requests = "2.31.0.3"
+types-ujson = "5.10.0.20240515"
+
+[tool.mypy]
+exclude = "(migrations)"
+pretty = true
+
+[[tool.mypy.overrides]]
+disallow_untyped_defs = true
+module = ["app.*", "lib.*", "tests.*"]
+
+[[tool.mypy.overrides]]
+# Ignore imports of the following packages as they don't
+# contain a `py.typed` marker file or stubs to tell mypy that they are type hinted
+ignore_missing_imports = true
+module = ["factory.*", "sqlalchemy.dialects.mysql.*", "sqlalchemy_utils.*"]
+
+[tool.pytest.ini_options]
+addopts = "-vvv -s"
+filterwarnings = [
+    # Treat all warnings (which aren't explicitly ignored below) as errors.
+    "error",
+]
+testpaths = ["app", "tests"]
+
+[tool.codespell]
+builtin = "clear,rare,informal,code,names"
+check-filenames = ""
+check-hidden = ""
+enable-colors = ""
+ignore-words-list = "som,iam,jupyter,ot,fo,te,toos,ue,thead,mke,ths,parm,singe,thirdparty"
+quiet-level = 2
+skip = "poetry.lock,.mypy_cache,.git,.ruff_cache,.coverage,.venv,.idea,.htmlcov"
+
+[tool.refurb]
+mypy_args = ["--follow-imports=skip"]
+ignore = [107, 115, 118, 124, 149, 157, 184]
+
+[tool.ruff]
+cache-dir = ".cache/ruff"
+fix = true
+
+# ruff linting rules are listed within: https://beta.ruff.rs/docs/rules
+lint.select = [
+    "ARG",  # flake8-unused-arguments
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "C90",  # mccabe-complexity
+    "E",    # pycodestyle-errors
+    "ERA",  # eradicate
+    "EXE",  # flake8-executable
+    "F",    # pyflakes
+    "FA",   # flake8-future-annotations
+    "I",    # isort
+    "ICN",  # flake8-import-conventions
+    "INP",  # flake78-no-pep420
+    "INT",  # flake8-gettext
+    "ISC",  # flake8-implicit-str-concat
+    "PERF", # Perlint
+    "PGH",  # pygrep-hooks
+    "PIE",  # flake8-pie
+    "PL",   # Pylint
+    "PT",   # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "PYI",  # flake8-pyi
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RUF",  # ruff
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simplify
+    "SLF",  # flake8-self
+    "T10",  # flake8-debugger
+    "T20",  # flake8-print
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+    "UP",   # pyupgrade
+    "W",    # pycodestyle-warnings
+    "YTT",  # flake8-2020
+]
+
+lint.ignore = [
+    "B008",    # flake8-bugbear
+    "B904",    # raise-without-from-inside-except
+    "C4",      # flake8-comprehensions
+    "E501",    # line-too-long
+    "EXE",     # flake8-executable
+    "FA",      # flake8-future-annotations
+    "ICN",     # flake8-import-conventions
+    "INP",     # flake78-no-pep420
+    "ISC",     # flake8-implicit-str-concat
+    "PIE",     # flake8-pie
+    "PLR0912", # too-many-branches
+    "PLR0913", # too-many-arguments
+    "PLR0915", # too-many-statements
+    "PLR2004", # magic-value-comparison
+    "PT001",   # pytest-fixture-incorrect-parentheses-style
+    "PT019",   # pytest-fixture-param-without-value
+    "RET506",  # superfluous-else-raise
+    "RUF012",  # mutable-class-default
+    "RUF018",  # assignment-in-assert
+    "S101",    # use-of-assert-detected
+    "S106",    # hardcoded-password-func-arg
+    "S324",    # hashlib-insecure-hash-function
+    "SIM103",  # needless-bool
+    "SIM105",  # suppressible-exception
+    "T10",     # flake8-debugger
+    "T20",     # flake8-print
+]
+
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "__pycache",
+    "migrations",
+    "settings",
+    ".coverage",
+    ".direnv",
+    ".mypy_cache",
+    ".pytype",
+    ".pdbrc",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    ".git",
+    ".gitignore",
+    "poetry.lock",
+    "site-packages",
+    "tmp",
+    "Dockerfile",
+    "docker-compose.yml",
+    "tests/test_migrations.py",
+]
+
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.13
+target-version = "py313"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+known-first-party = ["app", "lib", "tests"]
+
+# Exclude lines from test coverage
+[tool.coverage.report]
+exclude_lines = ["if TYPE_CHECKING:"]
